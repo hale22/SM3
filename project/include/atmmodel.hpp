@@ -36,9 +36,10 @@ class AtmModel {
 
 class AtmModelOutput: public AtmModel {
  public:
-	friend std::ostream& operator<<(std::ostream& os, const AtmModelOutput& atm_model);
+	explicit AtmModelOutput(int height);
+	// friend std::ostream& operator<<(std::ostream& os, AtmModelOutput& atm_model);
 
-	bool PrintHeight(std::ostream& os) const;
+	bool PrintHeight(std::ostream& os);
 	bool PrintPotHeight(std::ostream& os);
 	bool PrintAccGrav(std::ostream& os);
 	bool PrintTemp(std::ostream& os);
@@ -50,6 +51,6 @@ class AtmModelOutput: public AtmModel {
 bool CompareDouble(const double first, const double second, const double precis = kComparePrecis);
 }		// namespace SM3
 
-std::ostream& operator<<(std::ostream& os, const SM3::AtmModelOutput& atm_model);
+std::ostream& operator<<(std::ostream& os, SM3::AtmModelOutput& atm_model);
 
 #endif  //  PROJECT_INCLUDE_ATMMODEL_HPP_

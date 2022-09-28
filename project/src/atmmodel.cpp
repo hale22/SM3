@@ -11,14 +11,14 @@ double SM3::AtmModel::CalcPotHeight() const {
 	if (height_ < kMinHeight || height_ > kMaxHeight)
 		return kErrHeight;
 
-	return floor((double(kRadEarth)*double(height_))/(kRadEarth + height_));
+	return (double(kRadEarth)*height_)/double((kRadEarth + height_));
 }
 
 double SM3::AtmModel::CalcAccGrav() const {
 	if (height_ < kMinHeight || height_ > kMaxHeight)
 		return kErrHeight;
 
-	return kStandAccGrav*pow((kRadEarth/(kRadEarth+height_)), 2);
+	return kStandAccGrav*pow((double(kRadEarth)/(kRadEarth+height_)), 2);
 }
 
 double SM3::AtmModel::CalcTemp() const {
@@ -42,32 +42,32 @@ double SM3::AtmModel::CalcTemp() const {
 	}
 	if (CompareDouble(geo_pot_height, 11000) && geo_pot_height < 20000) {
 		temp_lower = 216.65;
-		beta_gradient = -0.0065;
+		beta_gradient = 0;
 		geo_pot_height_lower = 11000;
 	}
 	if (CompareDouble(geo_pot_height, 20000) && geo_pot_height < 32000) {
 		temp_lower = 216.65;
-		beta_gradient = 0;
+		beta_gradient = 0.0010;
 		geo_pot_height_lower = 20000;
 	}
 	if (CompareDouble(geo_pot_height, 32000) && geo_pot_height < 47000) {
 		temp_lower = 228.65;
-		beta_gradient = 0.0010;
+		beta_gradient = 0.0028;
 		geo_pot_height_lower = 32000;
 	}
 	if (CompareDouble(geo_pot_height, 47000) && geo_pot_height < 51000) {
 		temp_lower = 270.65;
-		beta_gradient = 0.0028;
+		beta_gradient = 0;
 		geo_pot_height_lower = 47000;
 	}
 	if (CompareDouble(geo_pot_height, 51000) && geo_pot_height < 71000) {
 		temp_lower = 270.65;
-		beta_gradient = 0;
+		beta_gradient = -0.0028;
 		geo_pot_height_lower = 51000;
 	}
 	if (CompareDouble(geo_pot_height, 71000) && geo_pot_height <= kMaxHeight) {
-		temp_lower = 270.65;
-		beta_gradient = -0.0028;
+		temp_lower = 214.65;
+		beta_gradient = -0.0020;
 		geo_pot_height_lower = 71000;
 	}
 	return temp_lower + beta_gradient * (geo_pot_height - geo_pot_height_lower);
@@ -100,7 +100,7 @@ bool SM3::CompareDouble(const double first, const double second, const double pr
   return equality_temp || first > second;
 }
 
-bool SM3::AtmModelOutput::PrintHeight(std::ostream& os) const {
+bool SM3::AtmModelOutput::PrintHeight(std::ostream& os) {
 	os << "Высота: " <<
 	height_ << std::endl;
 	return true;
@@ -135,6 +135,7 @@ std::ostream& operator<<(std::ostream& os, SM3::AtmModelOutput& atm_model) {
 	return os;
 }
 
+SM3::AtmModelOutput::AtmModelOutput(int height): AtmModel(height) {}
 
 //  завершенные todo:
 
