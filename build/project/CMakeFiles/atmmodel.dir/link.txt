@@ -1,0 +1,2 @@
+/usr/bin/ar qc libatmmodel.a CMakeFiles/atmmodel.dir/src/atmmodel.cpp.o
+/usr/bin/ranlib libatmmodel.a

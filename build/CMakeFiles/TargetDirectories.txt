@@ -1,0 +1,11 @@
+/home/sergey/SM3/build/CMakeFiles/test.dir
+/home/sergey/SM3/build/CMakeFiles/edit_cache.dir
+/home/sergey/SM3/build/CMakeFiles/rebuild_cache.dir
+/home/sergey/SM3/build/project/CMakeFiles/atmmodel.dir
+/home/sergey/SM3/build/project/CMakeFiles/test.dir
+/home/sergey/SM3/build/project/CMakeFiles/edit_cache.dir
+/home/sergey/SM3/build/project/CMakeFiles/rebuild_cache.dir
+/home/sergey/SM3/build/project/tests/CMakeFiles/tests.dir
+/home/sergey/SM3/build/project/tests/CMakeFiles/test.dir
+/home/sergey/SM3/build/project/tests/CMakeFiles/edit_cache.dir
+/home/sergey/SM3/build/project/tests/CMakeFiles/rebuild_cache.dir
