@@ -7,17 +7,17 @@
 int main() {
 	SM3::AtmModelOutput atmmodel(-100);
 	std::cout << atmmodel << std::endl;
-	atmmodel(3000);
+	atmmodel(3500);
 	std::cout << atmmodel << std::endl;
-	atmmodel(17046);
+	atmmodel(17000);
 	std::cout << atmmodel << std::endl;
-	atmmodel(26107);
+	atmmodel(26000);
 	std::cout << atmmodel << std::endl;
 	atmmodel(36000);
 	std::cout << atmmodel << std::endl;
-	atmmodel(48365);
+	atmmodel(49000);
 	std::cout << atmmodel << std::endl;
-	atmmodel(55000);
+	atmmodel(55480);
 	std::cout << atmmodel << std::endl;
 	atmmodel(79000);
 	std::cout << atmmodel << std::endl;

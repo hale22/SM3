@@ -1,1 +1,0 @@
-/usr/bin/g++  -Wall -Wextra -Werror -g CMakeFiles/tests.dir/src/main_test.cpp.o CMakeFiles/tests.dir/src/utils.cpp.o -o tests  ../libatmmodel.a -lstdc++fs 

@@ -14,69 +14,110 @@ double SM3::AtmModel::CalcPotHeight() const {
 	return (double(kRadEarth)*height_)/double((kRadEarth + height_));
 }
 
-double SM3::AtmModel::CalcAccGrav() const {
+double SM3::AtmModel::CalcAccGrav() const  {
 	if (height_ < kMinHeight || height_ > kMaxHeight)
 		return kErrHeight;
 
 	return kStandAccGrav*pow((double(kRadEarth)/(kRadEarth+height_)), 2);
 }
 
-double SM3::AtmModel::CalcTemp() const {
+double SM3::AtmModel::CalcTemp() {
 	if (height_ < kMinHeight || height_ > kMaxHeight)
 		return kErrHeight;
 
-	double geo_pot_height = CalcPotHeight();  //  или брать из data_
+	return constants_["TempLower"] + constants_["BetaGradient"] * (data_["GeoPotHeight"] - constants_["GeoPotLower"]);
+}
 
-	double temp_lower = 0;
-	double beta_gradient = 0;
-	double geo_pot_height_lower = 0;
+double SM3::AtmModel::CalcPressure() {
+	if (height_ < kMinHeight || height_ > kMaxHeight)
+		return kErrHeight;
+
+	if (constants_["BetaGradient"] != 0) {
+		return constants_["PressureLower"] /
+			pow((constants_["TempLower"] + constants_["BetaGradient"] * (data_["GeoPotHeight"] - constants_["GeoPotLower"]))
+					/ constants_["TempLower"],
+				(kStandAccGrav / (constants_["BetaGradient"] * kUnitGas)));
+	} else {
+			return constants_["PressureLower"] / pow(10, (((0.434294 * kStandAccGrav) / (kUnitGas * data_["Temperature"] )) *
+				(data_["GeoPotHeight"] - constants_["GeoPotLower"])));
+	}
+}
+
+double SM3::AtmModel::CalcDensity() {
+	if (height_ < kMinHeight || height_ > kMaxHeight)
+		return kErrHeight;
+
+	return (data_["Pressure"] * kMolarMass) / (data_["Temperature"] * kUniversalGas);
+}
+
+double SM3::AtmModel::CalcSoundSp() {
+	if (height_ < kMinHeight || height_ > kMaxHeight)
+		return kErrHeight;
+
+	return kSoundSpeed * sqrt(data_["Temperature"]);
+}
+
+bool SM3::AtmModel::DefineConstants() {
+	double geo_pot_height = data_["GeoPotHeight"];
 	if (CompareDouble(geo_pot_height, -2000) && geo_pot_height < 0) {
-		temp_lower = 301.15;
-		beta_gradient = -0.0065;
-		geo_pot_height_lower = -2000;
+		constants_["TempLower"] = kTempLower["First Range"];
+		constants_["BetaGradient"] = kBetaGradient["First Range"];
+		constants_["GeoPotLower"] = kGeoPotLower["First Range"];
+		constants_["PressureLower"] = kPressureLower["First Range"];
 	}
 	if (CompareDouble(geo_pot_height, 0) && geo_pot_height < 11000) {
-		temp_lower = 288.15;
-		beta_gradient = -0.0065;
-		geo_pot_height_lower = 0;
+		constants_["TempLower"] = kTempLower["Second Range"];
+		constants_["BetaGradient"] = kBetaGradient["Second Range"];
+		constants_["GeoPotLower"] = kGeoPotLower["Second Range"];
+		constants_["PressureLower"] = kPressureLower["Second Range"];
 	}
 	if (CompareDouble(geo_pot_height, 11000) && geo_pot_height < 20000) {
-		temp_lower = 216.65;
-		beta_gradient = 0;
-		geo_pot_height_lower = 11000;
+		constants_["TempLower"] = kTempLower["Third Range"];
+		constants_["BetaGradient"] = kBetaGradient["Third Range"];
+		constants_["GeoPotLower"] = kGeoPotLower["Third Range"];
+		constants_["PressureLower"] = kPressureLower["Third Range"];
 	}
 	if (CompareDouble(geo_pot_height, 20000) && geo_pot_height < 32000) {
-		temp_lower = 216.65;
-		beta_gradient = 0.0010;
-		geo_pot_height_lower = 20000;
+		constants_["TempLower"] = kTempLower["Fourth Range"];
+		constants_["BetaGradient"] = kBetaGradient["Fourth Range"];
+		constants_["GeoPotLower"] = kGeoPotLower["Fourth Range"];
+		constants_["PressureLower"] = kPressureLower["Fourth Range"];
 	}
 	if (CompareDouble(geo_pot_height, 32000) && geo_pot_height < 47000) {
-		temp_lower = 228.65;
-		beta_gradient = 0.0028;
-		geo_pot_height_lower = 32000;
+		constants_["TempLower"] = kTempLower["Fifth Range"];
+		constants_["BetaGradient"] = kBetaGradient["Fifth Range"];
+		constants_["GeoPotLower"] = kGeoPotLower["Fifth Range"];
+		constants_["PressureLower"] = kPressureLower["Fifth Range"];
 	}
 	if (CompareDouble(geo_pot_height, 47000) && geo_pot_height < 51000) {
-		temp_lower = 270.65;
-		beta_gradient = 0;
-		geo_pot_height_lower = 47000;
+		constants_["TempLower"] = kTempLower["Sixth Range"];
+		constants_["BetaGradient"] = kBetaGradient["Sixth Range"];
+		constants_["GeoPotLower"] = kGeoPotLower["Sixth Range"];
+		constants_["PressureLower"] = kPressureLower["Sixth Range"];
 	}
 	if (CompareDouble(geo_pot_height, 51000) && geo_pot_height < 71000) {
-		temp_lower = 270.65;
-		beta_gradient = -0.0028;
-		geo_pot_height_lower = 51000;
+		constants_["TempLower"] = kTempLower["Seventh Range"];
+		constants_["BetaGradient"] = kBetaGradient["Seventh Range"];
+		constants_["GeoPotLower"] = kGeoPotLower["Seventh Range"];
+		constants_["PressureLower"] = kPressureLower["Seventh Range"];
 	}
 	if (CompareDouble(geo_pot_height, 71000) && geo_pot_height <= kMaxHeight) {
-		temp_lower = 214.65;
-		beta_gradient = -0.0020;
-		geo_pot_height_lower = 71000;
+		constants_["TempLower"] = kTempLower["Eighth Range"];
+		constants_["BetaGradient"] = kBetaGradient["Eighth Range"];
+		constants_["GeoPotLower"] = kGeoPotLower["Eighth Range"];
+		constants_["PressureLower"] = kPressureLower["Eighth Range"];
 	}
-	return temp_lower + beta_gradient * (geo_pot_height - geo_pot_height_lower);
+	return true;
 }
 
 bool SM3::AtmModel::FillDataMap() {
 	data_["GeoPotHeight"] = CalcPotHeight();
+	DefineConstants();
 	data_["AccGrav"] = CalcAccGrav();
 	data_["Temperature"] = CalcTemp();
+	data_["Pressure"] = CalcPressure();
+	data_["Density"] = CalcDensity();
+	data_["SoundSpeed"] = CalcSoundSp();
 	return true;
 }
 
@@ -100,7 +141,7 @@ bool SM3::CompareDouble(const double first, const double second, const double pr
   return equality_temp || first > second;
 }
 
-bool SM3::AtmModelOutput::PrintHeight(std::ostream& os) {
+bool SM3::AtmModelOutput::PrintHeight(std::ostream& os) const {
 	os << "Высота: " <<
 	height_ << std::endl;
 	return true;
@@ -127,16 +168,36 @@ bool SM3::AtmModelOutput::PrintTemp(std::ostream& os) {
 	return true;
 }
 
+bool SM3::AtmModelOutput::PrintPressure(std::ostream& os) {
+	os << "Давление: " <<
+	std::setprecision(kDoublePrecisPres) <<
+	data_["Pressure"] << std::endl;
+	return true;
+}
+
+bool SM3::AtmModelOutput::PrintDensity(std::ostream& os) {
+	os << "Плотность: " <<
+	std::setprecision(kDoublePrecis) <<
+	data_["Density"] << std::endl;
+	return true;
+}
+
+bool SM3::AtmModelOutput::PrintSoundSp(std::ostream& os) {
+	os << "Скорость звука: " <<
+	std::setprecision(kDoublePrecis) <<
+	data_["SoundSpeed"] << std::endl;
+	return true;
+}
+
 std::ostream& operator<<(std::ostream& os, SM3::AtmModelOutput& atm_model) {
 	atm_model.PrintHeight(os);
 	atm_model.PrintPotHeight(os);
 	atm_model.PrintAccGrav(os);
 	atm_model.PrintTemp(os);
+	atm_model.PrintPressure(os);
+	atm_model.PrintDensity(os);
+	atm_model.PrintSoundSp(os);
 	return os;
 }
 
 SM3::AtmModelOutput::AtmModelOutput(int height): AtmModel(height) {}
-
-//  завершенные todo:
-
-//  todo: переделать сравнение даблов с помощью CompareDouble
